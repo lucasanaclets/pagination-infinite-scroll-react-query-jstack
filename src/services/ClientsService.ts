@@ -12,7 +12,7 @@ interface IClient {
   vehicleManufacturer: string;
 }
 
-export class ClientsService {
+export class clientsService {
   static async getAll(page = 1, perPage = 10) {
     await new Promise((resolve) => setTimeout(resolve, 1500));
     const { data } = await httpClient.get<IPaginatedResponse<IClient[]>>(
