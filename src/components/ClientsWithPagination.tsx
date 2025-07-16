@@ -1,3 +1,12 @@
+import {
+  Pagination,
+  PaginationButton,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/Pagination";
 import { Skeleton } from "@/components/ui/Skeleton";
 import {
   Table,
@@ -9,30 +18,18 @@ import {
   TableRow,
 } from "@/components/ui/Table";
 import { useClients } from "@/hooks/useClients";
-import { useEffect, useRef } from "react";
+import { generateEllipsisPagination } from "@/lib/utils";
+import { useMemo } from "react";
 
 export function Clients() {
-  const { clients, isLoading } = useClients();
-  const tableCaptionRef = useRef<null | HTMLTableCaptionElement>(null);
+  const { clients, isLoading, pagination } = useClients(1);
 
-  useEffect(() => {
-    if (!tableCaptionRef.current) {
-      return;
-    }
-
-    const observer = new IntersectionObserver((entries) => {
-      const { isIntersecting } = entries[0];
-      if (isIntersecting) {
-        console.log("Usuário chegou no fim da tela");
-      }
-    });
-
-    observer.observe(tableCaptionRef.current);
-
-    return () => {
-      observer.disconnect();
-    };
-  }, [isLoading]);
+  const pages = useMemo(() => {
+    return generateEllipsisPagination(
+      pagination.currentPage,
+      pagination.totalPages
+    );
+  }, [pagination.currentPage, pagination.totalPages]);
 
   return (
     <div>
@@ -94,8 +91,49 @@ export function Clients() {
             ))}
           </TableBody>
 
-          <TableCaption ref={tableCaptionRef}>
-            <div className="w-10 h-10 bg-red-500" />
+          <TableCaption>
+            <Pagination>
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious
+                    disabled={!pagination.hasPreviousPage}
+                    onClick={pagination.previousPage}
+                  />
+                </PaginationItem>
+
+                {pages.map((page) => {
+                  const isEllipsisPosition = typeof page === "string";
+
+                  if (isEllipsisPosition) {
+                    return (
+                      <PaginationItem key={page}>
+                        <PaginationButton disabled>
+                          <PaginationEllipsis />
+                        </PaginationButton>
+                      </PaginationItem>
+                    );
+                  }
+
+                  return (
+                    <PaginationItem key={page}>
+                      <PaginationButton
+                        isActive={pagination.currentPage === page}
+                        onClick={() => pagination.setPage(page)}
+                      >
+                        {page}
+                      </PaginationButton>
+                    </PaginationItem>
+                  );
+                })}
+
+                <PaginationItem>
+                  <PaginationNext
+                    disabled={!pagination.hasNextPage}
+                    onClick={pagination.nextPage}
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
           </TableCaption>
         </Table>
       )}

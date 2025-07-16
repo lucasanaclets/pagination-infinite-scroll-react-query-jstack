@@ -8,7 +8,7 @@ export function cn(...inputs: ClassValue[]) {
 export function generateEllipsisPagination(
   currentPage: number,
   totalPages: number,
-  surroudingPages = 2
+  surroudingPages = 1
 ) {
   const pages: (number | string)[] = [];
 
