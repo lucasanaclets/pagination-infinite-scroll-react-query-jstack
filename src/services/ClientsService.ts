@@ -14,7 +14,7 @@ interface IClient {
 
 export class clientsService {
   static async getAll(page = 1, perPage = 10) {
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    await new Promise((resolve) => setTimeout(resolve, 500));
     const { data } = await httpClient.get<IPaginatedResponse<IClient[]>>(
       "/clients",
       {
