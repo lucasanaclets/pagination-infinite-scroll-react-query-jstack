@@ -12,7 +12,7 @@ import { useClients } from "@/hooks/useClients";
 import { useEffect, useRef } from "react";
 
 export function Clients() {
-  const { clients, isLoading, nextPage } = useClients();
+  const { clients, isLoading, nextPage, hasNextPage } = useClients();
   const tableCaptionRef = useRef<null | HTMLTableCaptionElement>(null);
 
   useEffect(() => {
@@ -20,8 +20,14 @@ export function Clients() {
       return;
     }
 
-    const observer = new IntersectionObserver((entries) => {
+    const observer = new IntersectionObserver((entries, obs) => {
       const { isIntersecting } = entries[0];
+
+      if (!hasNextPage) {
+        obs.disconnect();
+        return;
+      }
+
       if (isIntersecting) {
         nextPage();
       }
@@ -32,7 +38,7 @@ export function Clients() {
     return () => {
       observer.disconnect();
     };
-  }, [isLoading, nextPage]);
+  }, [isLoading, nextPage, hasNextPage]);
 
   return (
     <div>
