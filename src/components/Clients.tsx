@@ -9,10 +9,12 @@ import {
   TableRow,
 } from "@/components/ui/Table";
 import { useClients } from "@/hooks/useClients";
+import { cn } from "@/lib/utils";
 import { useEffect, useRef } from "react";
 
 export function Clients() {
-  const { clients, isLoading, nextPage, hasNextPage } = useClients();
+  const { clients, isLoading, nextPage, hasNextPage, isFetchingNextPage } =
+    useClients();
   const tableCaptionRef = useRef<null | HTMLTableCaptionElement>(null);
 
   useEffect(() => {
@@ -100,8 +102,15 @@ export function Clients() {
             ))}
           </TableBody>
 
-          <TableCaption ref={tableCaptionRef}>
-            <div className="w-10 h-10 bg-red-500" />
+          <TableCaption
+            ref={tableCaptionRef}
+            className={cn(!isFetchingNextPage && "m-0 w-0 h-0")}
+          >
+            {isFetchingNextPage && (
+              <span className="text-muted-foreground">
+                Carregando mais dados...
+              </span>
+            )}
           </TableCaption>
         </Table>
       )}
