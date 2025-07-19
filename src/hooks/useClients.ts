@@ -14,7 +14,7 @@ export function useClients(perPage = 20) {
         const isLastPage = allPages.length >= totalPages;
 
         if (isLastPage) {
-          return null; // Atribui True para a variável hasNextPage
+          return null; // Atribui false para a variável hasNextPage
         }
 
         return lastPageParam + 1;
